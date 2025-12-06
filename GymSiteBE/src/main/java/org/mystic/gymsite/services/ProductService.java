@@ -6,6 +6,7 @@ import org.mystic.gymsite.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -13,12 +14,27 @@ public class ProductService {
 
     private final ProductRepository repository;
 
+    private static final String BASE_IMAGE_URL = "http://localhost:8080/images/";
+
+    private Product mapProductWithFullImageUrl(Product product) {
+        if (product.getImageUrl() != null && !product.getImageUrl().isEmpty() &&
+                !product.getImageUrl().startsWith("http")) {
+            String fullUrl = BASE_IMAGE_URL + product.getImageUrl();
+            product.setImageUrl(fullUrl);
+        }
+        return product;
+    }
+
     public List<Product> findAll() {
-        return repository.findAll();
+        return repository.findAll().stream()
+                .map(this::mapProductWithFullImageUrl)
+                .collect(Collectors.toList());
     }
 
     public Product findById(Long id) {
-        return repository.findById(id).orElseThrow();
+        return repository.findById(id)
+                .map(this::mapProductWithFullImageUrl)
+                .orElseThrow();
     }
 
     public Product create(Product p) {
@@ -32,6 +48,7 @@ public class ProductService {
         existing.setPrice(updated.getPrice());
         existing.setStock(updated.getStock());
         existing.setImageUrl(updated.getImageUrl());
+
         return repository.save(existing);
     }
 

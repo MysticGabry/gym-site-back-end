@@ -6,6 +6,8 @@ import org.mystic.gymsite.dtos.LoginRequest;
 import org.mystic.gymsite.dtos.RegisterRequest;
 import org.mystic.gymsite.dtos.AuthResponse;
 import org.mystic.gymsite.services.AuthService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,7 +24,16 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody LoginRequest request) {
-        return authService.login(request);
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        AuthResponse response = authService.login(request);
+
+        if (response == null) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body("Credenziali errate");
+        }
+
+        return ResponseEntity.ok(response);
     }
+
 }

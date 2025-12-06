@@ -38,36 +38,27 @@ public class AuthService {
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                // Assicurati che l'enum Role.USER sia importato o definito correttamente
                 .role(Role.USER)
                 .build();
 
         userRepository.save(user);
 
         String token = jwtService.generateToken(user);
-        // Il nuovo utente registrato ottiene ROLE_USER
         return new AuthResponse(token, "ROLE_USER");
     }
 
     public AuthResponse login(LoginRequest request) {
 
-        // Nota: Qui usiamo getUsername() come corretto nella sessione precedente,
-        // basandoci sulla tua definizione di LoginRequest.java
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-        );
+        User user = userRepository.findByEmail(request.getUsername())
+                .orElseThrow(() -> new RuntimeException("Email non trovata"));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Password errata");
+        }
 
-        String jwtToken = jwtService.generateToken(userDetails);
+        String token = jwtService.generateToken(user);
 
-        // Estrae il primo ruolo (Authority) e lo formatta come stringa
-        String role = userDetails.getAuthorities().stream()
-                .findFirst()
-                .map(GrantedAuthority::getAuthority)
-                .orElse("ROLE_USER");
-
-        return new AuthResponse(jwtToken, role);
+        return new AuthResponse(token, user.getRole().toString());
     }
+
 }

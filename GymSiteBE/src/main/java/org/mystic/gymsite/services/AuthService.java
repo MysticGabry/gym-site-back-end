@@ -8,12 +8,6 @@ import org.mystic.gymsite.entities.Role;
 import org.mystic.gymsite.entities.User;
 import org.mystic.gymsite.repositories.UserRepository;
 import org.mystic.gymsite.security.JwtService;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority; // Import Manca - Aggiunto
-import org.springframework.security.core.context.SecurityContextHolder; // Import Manca - Aggiunto
-import org.springframework.security.core.userdetails.UserDetails; // Import Manca - Aggiunto
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,15 +18,8 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
 
     public AuthResponse register(RegisterRequest request) {
-        if (userRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("Username already in use");
-        }
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already in use");
-        }
 
         User user = User.builder()
                 .username(request.getUsername())
@@ -44,21 +31,38 @@ public class AuthService {
         userRepository.save(user);
 
         String token = jwtService.generateToken(user);
-        return new AuthResponse(token, "ROLE_USER");
+
+        return new AuthResponse(token, user.getUsername(), user.getRole().name());
     }
 
     public AuthResponse login(LoginRequest request) {
-
-        User user = userRepository.findByEmail(request.getUsername())
-                .orElseThrow(() -> new RuntimeException("Email non trovata"));
-
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Password errata");
+        User user = userRepository.findByUsername(request.getUsername())
+                .orElse(null);
+        if (user == null) {
+            user = userRepository.findByEmail(request.getUsername())
+                    .orElse(null);
         }
-
+        if (user == null) {
+            return null;
+        }
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            return null;
+        }
+        if (user.getRole() == null) {
+            if ("admin".equalsIgnoreCase(user.getUsername())) {
+                user.setRole(Role.ADMIN);
+            } else {
+                user.setRole(Role.USER);
+            }
+            userRepository.save(user);
+        }
         String token = jwtService.generateToken(user);
-
-        return new AuthResponse(token, user.getRole().toString());
+        return new AuthResponse(
+                token,
+                user.getUsername(),
+                user.getRole().name()
+        );
     }
+
 
 }

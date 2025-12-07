@@ -1,7 +1,6 @@
 package org.mystic.gymsite.controllers;
 
 import lombok.RequiredArgsConstructor;
-
 import org.mystic.gymsite.dtos.LoginRequest;
 import org.mystic.gymsite.dtos.RegisterRequest;
 import org.mystic.gymsite.dtos.AuthResponse;
@@ -19,21 +18,19 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public AuthResponse register(@RequestBody RegisterRequest request) {
-        return authService.register(request);
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
+        AuthResponse response = authService.register(request);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         AuthResponse response = authService.login(request);
-
         if (response == null) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body("Credenziali errate");
         }
-
         return ResponseEntity.ok(response);
     }
-
 }

@@ -1,6 +1,8 @@
 package org.mystic.gymsite.services;
 
 import lombok.RequiredArgsConstructor;
+import org.mystic.gymsite.dtos.OrderDTO;
+import org.mystic.gymsite.dtos.OrderItemDTO;
 import org.mystic.gymsite.entities.*;
 import org.mystic.gymsite.repositories.OrderItemRepository;
 import org.mystic.gymsite.repositories.OrderRepository;
@@ -55,7 +57,6 @@ public class OrderService {
                     .product(p)
                     .quantity(qty)
                     .build();
-
             orderItemRepository.save(oi);
             order.getItems().add(oi);
         }
@@ -78,4 +79,33 @@ public class OrderService {
 
         return order;
     }
+
+    public OrderDTO getUserOrderById(String username, Long orderId) {
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Ordine non trovato"));
+
+        if (!order.getUser().getUsername().equals(username))
+            throw new RuntimeException("Accesso negato");
+
+        OrderDTO dto = new OrderDTO();
+        dto.setId(order.getId());
+        dto.setCreatedAt(order.getCreatedAt());
+
+        List<OrderItemDTO> items = order.getItems().stream().map(oi -> {
+            Product p = oi.getProduct();
+
+            OrderItemDTO i = new OrderItemDTO();
+            i.setProductId(p.getId());
+            i.setProductName(p.getName());
+            i.setProductImage(p.getImageUrl());
+            i.setPrice(p.getPrice());
+            i.setQuantity(oi.getQuantity());
+            return i;
+        }).toList();
+
+        dto.setItems(items);
+        return dto;
+    }
+
 }

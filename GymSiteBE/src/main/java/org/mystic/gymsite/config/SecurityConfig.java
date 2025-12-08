@@ -28,14 +28,16 @@ public class SecurityConfig {
 
         http.csrf(csrf -> csrf.disable());
 
-        http.cors(cors -> {});
+        http.cors(cors -> {
+        });
 
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/images/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
                 .requestMatchers("/api/orders/**").authenticated()
-                .requestMatchers(HttpMethod.POST, "/api/products/checkout").authenticated()
+                .requestMatchers(HttpMethod.POST, "/api/products/checkout")
+                .authenticated().requestMatchers("/api/orders/**").authenticated()
                 .anyRequest().permitAll()
         );
 

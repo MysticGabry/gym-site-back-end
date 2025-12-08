@@ -1,9 +1,9 @@
 package org.mystic.gymsite.services;
 
 import lombok.RequiredArgsConstructor;
-import org.mystic.gymsite.dtos.AuthResponse;
-import org.mystic.gymsite.dtos.LoginRequest;
-import org.mystic.gymsite.dtos.RegisterRequest;
+import org.mystic.gymsite.dtos.AuthItem;
+import org.mystic.gymsite.dtos.LoginItem;
+import org.mystic.gymsite.dtos.RegisterItem;
 import org.mystic.gymsite.entities.Role;
 import org.mystic.gymsite.entities.User;
 import org.mystic.gymsite.repositories.UserRepository;
@@ -19,7 +19,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
-    public AuthResponse register(RegisterRequest request) {
+    public AuthItem register(RegisterItem request) {
 
         User user = User.builder()
                 .username(request.getUsername())
@@ -32,10 +32,10 @@ public class AuthService {
 
         String token = jwtService.generateToken(user);
 
-        return new AuthResponse(token, user.getUsername(), user.getRole().name());
+        return new AuthItem(token, user.getUsername(), user.getRole().name());
     }
 
-    public AuthResponse login(LoginRequest request) {
+    public AuthItem login(LoginItem request) {
         User user = userRepository.findByUsername(request.getUsername())
                 .orElse(null);
         if (user == null) {
@@ -57,7 +57,7 @@ public class AuthService {
             userRepository.save(user);
         }
         String token = jwtService.generateToken(user);
-        return new AuthResponse(
+        return new AuthItem(
                 token,
                 user.getUsername(),
                 user.getRole().name()

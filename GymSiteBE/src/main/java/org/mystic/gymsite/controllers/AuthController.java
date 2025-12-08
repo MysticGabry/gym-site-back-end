@@ -1,9 +1,9 @@
 package org.mystic.gymsite.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.mystic.gymsite.dtos.LoginRequest;
-import org.mystic.gymsite.dtos.RegisterRequest;
-import org.mystic.gymsite.dtos.AuthResponse;
+import org.mystic.gymsite.dtos.LoginItem;
+import org.mystic.gymsite.dtos.RegisterItem;
+import org.mystic.gymsite.dtos.AuthItem;
 import org.mystic.gymsite.services.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,14 +18,14 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
-        AuthResponse response = authService.register(request);
+    public ResponseEntity<AuthItem> register(@RequestBody RegisterItem request) {
+        AuthItem response = authService.register(request);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        AuthResponse response = authService.login(request);
+    public ResponseEntity<?> login(@RequestBody LoginItem request) {
+        AuthItem response = authService.login(request);
         if (response == null) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)

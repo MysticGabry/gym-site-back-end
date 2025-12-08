@@ -3,8 +3,7 @@ package org.mystic.gymsite.dtos;
 import lombok.Data;
 
 @Data
-public class RegisterRequest {
+public class LoginItem {
     private String username;
-    private String email;
     private String password;
 }

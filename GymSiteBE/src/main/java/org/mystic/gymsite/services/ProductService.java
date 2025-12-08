@@ -17,10 +17,9 @@ public class ProductService {
     private static final String BASE_IMAGE_URL = "http://localhost:8080/images/";
 
     private Product mapProductWithFullImageUrl(Product product) {
-        if (product.getImageUrl() != null && !product.getImageUrl().isEmpty() &&
-                !product.getImageUrl().startsWith("http")) {
-            String fullUrl = BASE_IMAGE_URL + product.getImageUrl();
-            product.setImageUrl(fullUrl);
+        String url = product.getImageUrl();
+        if (url != null && !url.isEmpty() && !url.startsWith("http")) {
+            product.setImageUrl(BASE_IMAGE_URL + url);
         }
         return product;
     }
@@ -48,7 +47,6 @@ public class ProductService {
         existing.setPrice(updated.getPrice());
         existing.setStock(updated.getStock());
         existing.setImageUrl(updated.getImageUrl());
-
         return repository.save(existing);
     }
 

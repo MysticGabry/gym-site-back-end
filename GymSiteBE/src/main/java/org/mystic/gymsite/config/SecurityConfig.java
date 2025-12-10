@@ -30,7 +30,6 @@ public class SecurityConfig {
 
         http.cors(cors -> {
         });
-
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/images/**").permitAll()

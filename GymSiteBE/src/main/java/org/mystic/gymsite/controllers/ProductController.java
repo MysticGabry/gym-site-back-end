@@ -1,7 +1,7 @@
 package org.mystic.gymsite.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.mystic.gymsite.dtos.CheckoutItem;
+import org.mystic.gymsite.dtos.CheckoutDTO;
 import org.mystic.gymsite.entities.Order;
 import org.mystic.gymsite.entities.Product;
 import org.mystic.gymsite.entities.User;
@@ -54,14 +54,14 @@ public class ProductController {
     @PostMapping("/checkout")
     public ResponseEntity<?> checkout(
             Authentication auth,
-            @RequestBody List<CheckoutItem> items) {
+            @RequestBody List<CheckoutDTO> items) {
 
         User user = userService.getByUsername(auth.getName());
 
         Map<Long, Integer> map = items.stream()
                 .collect(Collectors.toMap(
-                        CheckoutItem::getProductId,
-                        CheckoutItem::getQuantity
+                        CheckoutDTO::getProductId,
+                        CheckoutDTO::getQuantity
                 ));
 
         Order order = orderService.createOrder(user, map);

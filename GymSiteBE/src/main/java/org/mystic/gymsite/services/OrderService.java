@@ -69,17 +69,6 @@ public class OrderService {
         return orderRepository.findByUserOrderByCreatedAtDesc(user);
     }
 
-    public Order getUserOrderById(User user, Long orderId) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Ordine non trovato"));
-
-        if (!order.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("Accesso negato");
-        }
-
-        return order;
-    }
-
     public OrderDTO getUserOrderById(String username, Long orderId) {
 
         Order order = orderRepository.findById(orderId)
@@ -94,7 +83,6 @@ public class OrderService {
 
         List<OrderItemDTO> items = order.getItems().stream().map(oi -> {
             Product p = oi.getProduct();
-
             OrderItemDTO i = new OrderItemDTO();
             i.setProductId(p.getId());
             i.setProductName(p.getName());

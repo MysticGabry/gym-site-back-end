@@ -1,4 +1,4 @@
-package org.mystic.gymsite.entities;
+package org.mystic.gymsite.utils;
 
 public enum Role {
     USER,

@@ -30,26 +30,32 @@ public class UserController {
     @PutMapping("/email")
     public ResponseEntity<?> updateEmail(
             Authentication auth,
-            @RequestBody Map<String, String> request)
-    {
+            @RequestBody Map<String, String> request) {
         String newEmail = request.get("email");
+
         if (newEmail == null || newEmail.isBlank()) {
             return ResponseEntity.badRequest().body("Email non valida");
         }
 
-        User updated = userService.updateEmail(auth.getName(), newEmail);
+        try {
+            User updated = userService.updateEmail(auth.getName(), newEmail);
 
-        return ResponseEntity.ok(Map.of(
-                "message", "Email aggiornata con successo",
-                "email", updated.getEmail()
-        ));
+            return ResponseEntity.ok(Map.of(
+                    "message", "Email aggiornata con successo",
+                    "email", updated.getEmail()
+            ));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "message", "Errore aggiornamento email",
+                    "error", e.getMessage()
+            ));
+        }
     }
 
     @PutMapping("/password")
     public ResponseEntity<?> updatePassword(
             Authentication auth,
-            @RequestBody Map<String, String> request)
-    {
+            @RequestBody Map<String, String> request) {
         String oldPassword = request.get("oldPassword");
         String newPassword = request.get("newPassword");
 
@@ -57,7 +63,6 @@ public class UserController {
                 oldPassword.isBlank() || newPassword.isBlank()) {
             return ResponseEntity.badRequest().body("Password non valide");
         }
-
         try {
             userService.updatePassword(auth.getName(), oldPassword, newPassword);
         } catch (RuntimeException e) {

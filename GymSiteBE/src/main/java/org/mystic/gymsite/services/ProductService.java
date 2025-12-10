@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.mystic.gymsite.entities.Product;
 import org.mystic.gymsite.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,4 +52,5 @@ public class ProductService {
     public void delete(Long id) {
         repository.deleteById(id);
     }
+
 }

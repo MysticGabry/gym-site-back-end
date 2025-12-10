@@ -2,6 +2,7 @@ package org.mystic.gymsite.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.mystic.gymsite.utils.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

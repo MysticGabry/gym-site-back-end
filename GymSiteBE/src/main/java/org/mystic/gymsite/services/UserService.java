@@ -19,6 +19,12 @@ public class UserService {
     }
 
     public User updateEmail(String username, String newEmail) {
+        User existingUser = userRepository.findByEmail(newEmail).orElse(null);
+
+        if (existingUser != null && !existingUser.getUsername().equals(username)) {
+            throw new RuntimeException("Email già in uso da un altro utente.");
+        }
+
         User user = getByUsername(username);
         user.setEmail(newEmail);
         return userRepository.save(user);

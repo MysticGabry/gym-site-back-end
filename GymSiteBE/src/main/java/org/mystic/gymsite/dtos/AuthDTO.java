@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthItem {
+public class AuthDTO {
     private String token;
     private String username;
     private String role;

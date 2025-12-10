@@ -19,26 +19,6 @@ Il progetto fornisce tutte le API necessarie al Front-End Angular e segue un'arc
 
 ---
 
-## 🧱 Architettura del progetto
-
-Struttura principale:
-
-src/main/java/org/mystic/gymsite
-│
-├── Application.java
-│
-├── config/ → Configurazioni (SecurityConfig)
-├── controllers/ → API REST (Auth, User, Products, Orders)
-├── dtos/ → Request/Response DTO
-├── entities/ → Entità JPA (User, Product, Order, OrderItem)
-├── handler/ → GlobalExceptionHandler
-├── repositories/ → Repositories JPA
-├── security/ → JWT Filter, JwtService
-├── services/ → Business logic (Auth, Product, Orders)
-└── utils/ → Enum e helper (Role)
-
-yaml
-Copia codice
 
 L’architettura segue questo schema:
 
@@ -82,24 +62,15 @@ Endpoint pubblici:
 /api/auth/register
 /api/products
 
-yaml
-Copia codice
-
 Endpoint protetti:
 
 /api/orders/**
 /api/users/**
 
-yaml
-Copia codice
-
 Endpoint admin:
 
 /api/products/admin/**
 /api/orders/admin/**
-
-yaml
-Copia codice
 
 ---
 
@@ -191,8 +162,6 @@ POST /api/orders/checkout
 GET /api/orders
 GET /api/orders/{id}
 
-yaml
-Copia codice
 
 ---
 
@@ -210,9 +179,6 @@ spring.jpa.show-sql=true
 jwt.secret=INSERISCI_UNA_CHIAVE_SEGRETA
 jwt.expiration=86400000
 
-yaml
-Copia codice
-
 ---
 
 # ▶️ Avvio del progetto
@@ -229,9 +195,6 @@ Copia codice
 
 ### 3️⃣ Avvia l’app:
 mvn spring-boot:run
-
-yaml
-Copia codice
 
 Oppure da IDE:
 > Run → Application.java

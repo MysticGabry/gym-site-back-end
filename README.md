@@ -26,9 +26,6 @@ Controller → Service → Repository → Database
 ↓
 Security Layer (JWT)
 
-markdown
-Copia codice
-
 ---
 
 # 🔐 Autenticazione & Sicurezza (JWT)
@@ -144,18 +141,12 @@ DTO principali:
 POST /api/auth/register
 POST /api/auth/login
 
-shell
-Copia codice
-
 ## 📦 Prodotti
 GET /api/products
 GET /api/products/{id}
 POST /api/products/admin (ADMIN)
 PUT /api/products/admin/{id} (ADMIN)
 DELETE /api/products/admin/{id} (ADMIN)
-
-shell
-Copia codice
 
 ## 🧾 Ordini
 POST /api/orders/checkout
@@ -187,9 +178,6 @@ jwt.expiration=86400000
 Crea un database:
 
 CREATE DATABASE gym_site_db;
-
-shell
-Copia codice
 
 ### 2️⃣ Imposta `application.properties`
 
